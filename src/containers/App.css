@@ -1,0 +1,19 @@
+.Main {
+    border-bottom: solid 2px #000;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.Button {
+    width: 150px;
+    height: 40px;
+    background-color: #a55eea;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    margin: 10px 10px;
+    font-size: 16px;
+    color: #fff;
+    outline: none;
+}

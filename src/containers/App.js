@@ -3,6 +3,7 @@ import { hot } from "react-hot-loader";
 import TasksList from "./TasksList";
 import TaskForm from "../components/TaskForm";
 import style from "./App.css";
+import inputStyle from "../components/Task.css";
 
 class App extends React.Component {
     constructor(props) {
@@ -10,8 +11,10 @@ class App extends React.Component {
         this.state = {
             baseUrl: "https://mysterious-depths-52522.herokuapp.com/v1/tasks",
             tasks: [],
+            id: null,
             title: "",
-            content: ""
+            content: "",
+            updateButton: inputStyle.ButtonUpdate
         };
     }
     getAllTasks() {
@@ -38,6 +41,17 @@ class App extends React.Component {
         fetch(this.state.baseUrl, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(newTask)})
             .then(this.getAllTasks.bind(this));
     }
+    updateTask() {
+        let updateTask = {
+            id: this.state.id,
+            title: this.state.title,
+            content: this.state.content
+        };
+        fetch(this.state.baseUrl, {method: "PUT", headers: {"Content-Type": "application/json"}, body: JSON.stringify(updateTask)})
+            .then(this.changeStyle(false))
+            .then(this.getAllTasks.bind(this));
+        console.log(`${updateTask.id} - ${updateTask.title} - ${updateTask.content}`)
+    }
     takeName(name) {
         this.setState({
             title: name
@@ -46,7 +60,25 @@ class App extends React.Component {
     takeContent(content) {
         this.setState({
             content: content
-        })
+        });
+    }
+    takeID(id) {
+        this.setState({
+            id: id
+        });
+    }
+    changeStyle(state) {
+
+        if (state) {
+            this.setState({
+                updateButton: inputStyle.ButtonUpdateVisible
+            });
+        } else {
+            this.setState({
+                updateButton: inputStyle.ButtonUpdate
+            });
+        }
+
     }
     render() {
         return (
@@ -57,7 +89,10 @@ class App extends React.Component {
                     <TaskForm onName={this.takeName.bind(this)} onContent={this.takeContent.bind(this)}/>
                     <button onClick={this.addTask.bind(this)} className={style.Button}>Add new task</button>
                 </div>
-                <TasksList deleteTask={this.removeTask.bind(this)} data={this.state.tasks}/>
+                <TasksList changeStyle={this.changeStyle.bind(this)} inputStyle={this.state.updateButton}
+                           deleteTask={this.removeTask.bind(this)} data={this.state.tasks}
+                           onName={this.takeName.bind(this)} onContent={this.takeContent.bind(this)}
+                            onID={this.takeID.bind(this)} updateTask={this.updateTask.bind(this)}/>
             </div>
         )
     }

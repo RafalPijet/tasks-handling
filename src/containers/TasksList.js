@@ -1,9 +1,19 @@
 import React from "react";
 import Task from "../components/Task";
 
-const TasksList = props => props.data.map(task => <Task changeStyle={props.changeStyle} inputStyle={props.inputStyle}
-                                                        deleteTask={props.deleteTask} id={task.id} key={task.id}
-                                                        name={task.title} content={task.content} onName={props.onName}
-                                                        onContent={props.onContent} onID={props.onID} updateTask={props.updateTask}/>);
+class TasksList extends React.Component {
+    get tasks() {
+        return this.props.data.map(task => <Task deleteTask={this.props.deleteTask} id={task.id} key={task.id}
+                                                 name={task.title} content={task.content}
+                                                 updateTask={this.props.updateTask}/>)
+    }
+    render() {
+        return (
+            <div>
+                {this.tasks}
+            </div>
+        )
+    }
+}
 
 export default TasksList;

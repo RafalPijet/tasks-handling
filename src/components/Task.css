@@ -11,7 +11,7 @@
 .FirstInput {
     font-size: 18px;
     margin: 10px;
-    color: #ffffff;
+    color: #fff;
     background-color: inherit;
     border: none;
 }
@@ -19,7 +19,7 @@
 .SecondInput {
     font-size: 21px;
     margin: 0 10px 10px 10px;
-    color: #ffffff;
+    color: #fff;
     background-color: inherit;
     border: none;
     width: 100%;

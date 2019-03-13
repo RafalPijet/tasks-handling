@@ -5,7 +5,7 @@ class TasksList extends React.Component {
     get tasks() {
         return this.props.data.map(task => <Task deleteTask={this.props.deleteTask} id={task.id} key={task.id}
                                                  name={task.title} content={task.content}
-                                                 updateTask={this.props.updateTask}/>)
+                                                 updateTask={this.props.updateTask} isWorking={this.props.isWorking}/>)
     }
     render() {
         return (

@@ -13,7 +13,8 @@ class App extends React.Component {
             title: "",
             content: "",
             progress: style.ProgressOff,
-            button: style.ButtonDisabled
+            button: style.ButtonDisabled,
+            isWorking: false
         };
     }
     componentDidMount() {
@@ -34,19 +35,33 @@ class App extends React.Component {
             });
     }
     removeTask(id) {
+        this.imBusy(true);
+
         fetch(this.state.baseUrl + `/${id}`, {method: "DELETE"})
-            .then(this.getAllTasks.bind(this))
-    }
-    addTask() {
-        let newTask = {
-            title: this.state.title,
-            content: this.state.content
-        };
-        
-        fetch(this.state.baseUrl, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(newTask)})
             .then(this.getAllTasks.bind(this));
     }
+    addTask() {
+
+        if (this.state.title.length > 2 && this.state.content.length > 2) {
+            this.imBusy(true);
+            let newTask = {
+                title: this.state.title,
+                content: this.state.content
+            };
+
+            fetch(this.state.baseUrl, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(newTask)})
+                .then(this.getAllTasks.bind(this));
+            this.setState({
+                title: "",
+                content: ""
+            });
+
+        } else {
+            alert("You must enter at least 3 characters!!!");
+        }
+    }
     updateTask(id, title, content) {
+        this.imBusy(true);
         let updateTask = {
             id: id,
             title: title,
@@ -78,7 +93,8 @@ class App extends React.Component {
         if (isBusy) {
             this.setState({
                 progress: style.ProgressOn,
-                button: style.ButtonDisabled
+                button: style.ButtonDisabled,
+                isWorking: true
             });
 
             for (let i = 0; i < buttons.length; i++) {
@@ -92,7 +108,8 @@ class App extends React.Component {
         } else {
             this.setState({
                 progress: style.ProgressOff,
-                button: style.Button
+                button: style.Button,
+                isWorking: false
             });
 
             for (let i = 0; i < buttons.length; i++) {
@@ -114,7 +131,7 @@ class App extends React.Component {
                     <button onClick={this.addTask.bind(this)} className={this.state.button} id="addTaskButton">Add new task</button>
                 </div>
                 <TasksList deleteTask={this.removeTask.bind(this)} data={this.state.tasks}
-                           updateTask={this.updateTask.bind(this)}/>
+                           updateTask={this.updateTask.bind(this)} isWorking={this.state.isWorking}/>
             </div>
         )
     }

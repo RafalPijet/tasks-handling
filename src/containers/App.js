@@ -9,11 +9,19 @@ class App extends React.Component {
         super(props);
         this.state = {
             baseUrl: "https://mysterious-depths-52522.herokuapp.com/v1/tasks",
-            tasks: []
+            tasks: [],
+            title: "",
+            content: "",
+            progress: style.ProgressOff,
+            button: style.ButtonDisabled
         };
+    }
+    componentDidMount() {
+        document.getElementById("addTaskButton").setAttribute("disabled", "true");
     }
     getAllTasks() {
         let tasks = [];
+        this.imBusy(true);
 
         fetch(this.state.baseUrl)
             .then(response => response.json())
@@ -22,6 +30,7 @@ class App extends React.Component {
                 this.setState({
                     tasks: tasks
                 });
+                this.imBusy(false);
             });
     }
     removeTask(id) {
@@ -33,6 +42,7 @@ class App extends React.Component {
             title: this.state.title,
             content: this.state.content
         };
+        
         fetch(this.state.baseUrl, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(newTask)})
             .then(this.getAllTasks.bind(this));
     }
@@ -46,23 +56,62 @@ class App extends React.Component {
             .then(this.getAllTasks.bind(this));
     }
     takeName(name) {
-        this.setState({
-            title: name
-        });
+
+        if (name.length >= 3) {
+            this.setState({
+                title: name
+            });
+        }
     }
     takeContent(content) {
-        this.setState({
-            content: content
-        });
+
+        if (content.length >= 3) {
+            this.setState({
+                content: content
+            });
+        }
+    }
+    imBusy(isBusy) {
+        let buttons = document.querySelectorAll("button");
+        let inputs = document.querySelectorAll("input");
+
+        if (isBusy) {
+            this.setState({
+                progress: style.ProgressOn,
+                button: style.ButtonDisabled
+            });
+
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+            }
+
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = true;
+            }
+
+        } else {
+            this.setState({
+                progress: style.ProgressOff,
+                button: style.Button
+            });
+
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = false;
+            }
+
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = false;
+            }
+        }
     }
     render() {
         return (
             <div>
                 <div className={style.Main}>
-                    <h1 style={{cursor: "pointer"}}
+                    <h1 className={this.state.progress}
                         onClick={this.getAllTasks.bind(this)}>My TASKS ({this.state.tasks.length})</h1>
                     <TaskForm onName={this.takeName.bind(this)} onContent={this.takeContent.bind(this)}/>
-                    <button onClick={this.addTask.bind(this)} className={style.Button}>Add new task</button>
+                    <button onClick={this.addTask.bind(this)} className={this.state.button} id="addTaskButton">Add new task</button>
                 </div>
                 <TasksList deleteTask={this.removeTask.bind(this)} data={this.state.tasks}
                            updateTask={this.updateTask.bind(this)}/>

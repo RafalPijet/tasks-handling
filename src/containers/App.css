@@ -17,3 +17,24 @@
     color: #fff;
     outline: none;
 }
+
+.ButtonDisabled {
+    width: 150px;
+    height: 40px;
+    background-color: #778ca3;
+    border-radius: 20px;
+    border: none;
+    cursor: progress;
+    margin: 10px 10px;
+    font-size: 16px;
+    color: #fff;
+    outline: none;
+}
+
+.ProgressOn {
+    cursor: progress;
+}
+
+.ProgressOff {
+    cursor: pointer;
+}

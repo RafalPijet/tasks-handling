@@ -59,3 +59,4 @@ class Task extends React.Component {
 }
 
 export default Task;
+//onBlur po wyjściu z komponentu
